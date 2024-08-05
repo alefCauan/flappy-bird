@@ -7,7 +7,7 @@ import abc
 
 TELA_LARGURA = 500
 TELA_ALTURA = 800
-os.chdir('/home/alef/Linguagens/Python/Testes/OOP/PrimeiroJogo/flappy-bird-')
+os.chdir('/home/alef/Linguagens/Python/Testes/OOP/PrimeiroJogo/flappy-bird')
 IMAGEM_CANO = pygame.transform.scale2x(pygame.image.load(os.path.join('imgs', 'pipe.png')))
 IMAGEM_CHAO = pygame.transform.scale2x(pygame.image.load(os.path.join('imgs', 'base.png')))
 IMAGEM_BACKGROUND = pygame.transform.scale2x(pygame.image.load(os.path.join('imgs', 'bg.png')))
@@ -18,7 +18,7 @@ IMAGENS_PASSARO = [
 ]
 
 pygame.font.init()
-FONTE_PONTOS = pygame.font.SysFont('arial', 50)
+FONTE_PONTOS = pygame.font.SysFont('times new roman', 30)
 
 class Usuario:
     def __init__(self, nome):
@@ -42,7 +42,6 @@ class HistoricoPontuacao:
 
     def adicionar_pontuacao(self, usuario, pontuacao):
         self.historico.append((usuario, pontuacao))
-
 
 class Desenhavel(abc.ABC):
     @abc.abstractmethod
@@ -319,8 +318,8 @@ def desenhar_tela(tela, objetos, pontos):
     tela.blit(IMAGEM_BACKGROUND, (0, 0))
     for obj in objetos:
         obj.desenhar(tela)
-    texto = FONTE_PONTOS.render(f"Pontuação: {pontos}", 1, (255, 255, 255))
-    tela.blit(texto, (TELA_LARGURA - 75 - texto.get_width(), 10))
+    texto = FONTE_PONTOS.render(f"PONTUAÇÃO: {pontos}", 1, (255, 255, 255))
+    tela.blit(texto, (TELA_LARGURA - 135 - texto.get_width(), 10))
     pygame.display.update()
 
 def main():
