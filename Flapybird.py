@@ -3,6 +3,7 @@ from tkinter import messagebox, simpledialog
 import pygame
 import os
 import random
+import abc
 
 TELA_LARGURA = 500
 TELA_ALTURA = 800
@@ -35,17 +36,23 @@ class HistoricoPontuacao:
     def __init__(self):
         self._historico = []
 
-    def adicionar_pontuacao(self, usuario, pontuacao):
-        self._historico.append((usuario, pontuacao))
-
-    def listar_pontuacoes(self):
+    @property
+    def historico(self):
         return self._historico
 
-class Desenhavel:
+    def adicionar_pontuacao(self, usuario, pontuacao):
+        print(pontuacao)
+        self.historico.append((usuario, pontuacao))
+
+
+class Desenhavel(abc.ABC):
+    @abc.abstractmethod
     def desenhar(self, tela):
         pass
+    @abc.abstractmethod
     def mover(self):
         pass
+
 class Passaro(Desenhavel):
     IMGS = IMAGENS_PASSARO
     ROTACAO_MAXIMA = 25
@@ -200,18 +207,34 @@ class Chao(Desenhavel):
     def y(self):
         return self._y
 
-    def mover(self):
-        self._x1 -= self.VELOCIDADE
-        self._x2 -= self.VELOCIDADE
+    @property
+    def x1(self):
+        return self._x1
 
-        if self._x1 + self.LARGURA < 0:
-            self._x1 = self._x2 + self.LARGURA
-        if self._x2 + self.LARGURA < 0:
-            self._x2 = self._x1 + self.LARGURA
+    @property
+    def x2(self):
+        return self._x2
+
+    @x1.setter
+    def x1(self, value: int):
+        self._x1 -= value
+
+    @x2.setter
+    def x2(self, value: int):
+        self._x2 -= value
+
+    def mover(self):
+        self.x1 -= self.VELOCIDADE
+        self.x2 -= self.VELOCIDADE
+
+        if self.x1 + self.LARGURA < 0:
+            self.x1 = self.x2 + self.LARGURA
+        if self.x2 + self.LARGURA < 0:
+            self.x2 = self.x1 + self.LARGURA
 
     def desenhar(self, tela):
-        tela.blit(self.IMAGEM, (self._x1, self._y))
-        tela.blit(self.IMAGEM, (self._x2, self._y))
+        tela.blit(self.IMAGEM, (self.x1, self.y))
+        tela.blit(self.IMAGEM, (self.x2, self.y))
 
 def desenhar_tela(tela, objetos, pontos):
     tela.blit(IMAGEM_BACKGROUND, (0, 0))
@@ -226,7 +249,11 @@ def main():
     root.withdraw()
 
     nome_usuario = simpledialog.askstring("NEW PLAYER", "Qual é o seu nome?")
-    usuario = Usuario(nome_usuario)
+
+    if nome_usuario == None:
+        usuario = Usuario("Player")
+    else:
+        usuario = Usuario(nome_usuario)
 
     historico = HistoricoPontuacao()
     
@@ -262,6 +289,8 @@ def main():
             for cano in canos:
                 for i, passaro in enumerate(passaros):
                     if cano.colidir(passaro):
+                        historico.adicionar_pontuacao(usuario, pontos)
+                        messagebox.showinfo("Game Over", f"Game Over! Pontuação: {pontos}")
                         passaros.pop(i)
                         rodando = False
                     if not cano.passou and passaro.x > cano.x:
@@ -290,7 +319,7 @@ def main():
         if not jogar_novamente:
             break
 
-    historico_str = "\n".join([f"{h[0].nome}: {h[1]}" for h in historico.listar_pontuacoes()])
+    historico_str = "\n".join([f"{h[0].nome}: {h[1]}" for h in historico.historico])
     messagebox.showinfo("Histórico de Pontuações", historico_str)
 
 if __name__ == '__main__':
