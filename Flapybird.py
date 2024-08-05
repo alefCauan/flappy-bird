@@ -41,7 +41,6 @@ class HistoricoPontuacao:
         return self._historico
 
     def adicionar_pontuacao(self, usuario, pontuacao):
-        print(pontuacao)
         self.historico.append((usuario, pontuacao))
 
 
@@ -73,66 +72,102 @@ class Passaro(Desenhavel):
     def x(self):
         return self._x
 
+    @x.setter
+    def x(self, value):
+        self._x = value
+
     @property
     def y(self):
         return self._y
+
+    @y.setter
+    def y(self, value):
+        self._y = value
 
     @property
     def imagem(self):
         return self._imagem
 
+    @imagem.setter
+    def imagem(self, value):
+        self._imagem = value
+
     @property
     def altura(self):
         return self._altura
+
+    @altura.setter
+    def altura(self, value):
+        self._altura = value
 
     @property
     def angulo(self):
         return self._angulo
 
+    @angulo.setter
+    def angulo(self, value):
+        self._angulo = value
+
+    @property
+    def tempo(self):
+        return self._tempo
+
+    @tempo.setter
+    def tempo(self, value):
+        self._tempo = value
+
+    @property
+    def contagem_imagem(self):
+        return self._contagem_imagem
+
+    @contagem_imagem.setter
+    def contagem_imagem(self, value):
+        self._contagem_imagem = value
+
     def pular(self):
         self._velocidade = -8.5
-        self._tempo = 0
-        self._altura = self._y
+        self.tempo = 0
+        self.altura = self._y
 
     def mover(self):
-        self._tempo += 1
-        deslocamento = 1.5 * (self._tempo**2) + self._velocidade * self._tempo
+        self.tempo += 1
+        deslocamento = 1.5 * (self._tempo**2) + self._velocidade * self.tempo
 
         if deslocamento > 16:
             deslocamento = 16
         elif deslocamento < 0:
             deslocamento -= 2
 
-        self._y += deslocamento
+        self.y += deslocamento
 
         if deslocamento < 0 or self._y < (self._altura + 50):
-            if self._angulo < self.ROTACAO_MAXIMA:
-                self._angulo = self.ROTACAO_MAXIMA
+            if self.angulo < self.ROTACAO_MAXIMA:
+                self.angulo = self.ROTACAO_MAXIMA
         else:
-            if self._angulo > -90:
-                self._angulo -= self.VELOCIDADE_ROTACAO
+            if self.angulo > -90:
+                self.angulo -= self.VELOCIDADE_ROTACAO
 
     def desenhar(self, tela):
-        self._contagem_imagem += 1
+        self.contagem_imagem += 1
 
-        if self._contagem_imagem < self.TEMPO_ANIMACAO:
-            self._imagem = self.IMGS[0]
-        elif self._contagem_imagem < self.TEMPO_ANIMACAO*2:
-            self._imagem = self.IMGS[1]
-        elif self._contagem_imagem < self.TEMPO_ANIMACAO*3:
-            self._imagem = self.IMGS[2]
-        elif self._contagem_imagem < self.TEMPO_ANIMACAO*4:
-            self._imagem = self.IMGS[1]
-        elif self._contagem_imagem >= self.TEMPO_ANIMACAO*4 + 1:
-            self._imagem = self.IMGS[0]
-            self._contagem_imagem = 0
+        if self.contagem_imagem < self.TEMPO_ANIMACAO:
+            self.imagem = self.IMGS[0]
+        elif self.contagem_imagem < self.TEMPO_ANIMACAO*2:
+            self.imagem = self.IMGS[1]
+        elif self.contagem_imagem < self.TEMPO_ANIMACAO*3:
+            self.imagem = self.IMGS[2]
+        elif self.contagem_imagem < self.TEMPO_ANIMACAO*4:
+            self.imagem = self.IMGS[1]
+        elif self.contagem_imagem >= self.TEMPO_ANIMACAO*4 + 1:
+            self.imagem = self.IMGS[0]
+            self.contagem_imagem = 0
 
-        if self._angulo <= -80:
-            self._imagem = self.IMGS[1]
-            self._contagem_imagem = self.TEMPO_ANIMACAO*2
+        if self.angulo <= -80:
+            self.imagem = self.IMGS[1]
+            self.contagem_imagem = self.TEMPO_ANIMACAO*2
 
-        imagem_rotacionada = pygame.transform.rotate(self._imagem, self._angulo)
-        pos_centro_imagem = self._imagem.get_rect(topleft=(self._x, self._y)).center
+        imagem_rotacionada = pygame.transform.rotate(self.imagem, self.angulo)
+        pos_centro_imagem = self.imagem.get_rect(topleft=(self.x, self.y)).center
         retangulo = imagem_rotacionada.get_rect(center=pos_centro_imagem)
         tela.blit(imagem_rotacionada, retangulo.topleft)
 
@@ -157,6 +192,50 @@ class Cano(Desenhavel):
     def x(self):
         return self._x
 
+    @x.setter
+    def x(self, value):
+        self._x = value
+
+    @property
+    def altura(self):
+        return self._altura
+
+    @altura.setter
+    def altura(self, value):
+        self._altura = value
+
+    @property
+    def pos_topo(self):
+        return self._pos_topo
+
+    @pos_topo.setter
+    def pos_topo(self, value):
+        self._pos_topo = value
+
+    @property
+    def pos_base(self):
+        return self._pos_base
+
+    @pos_base.setter
+    def pos_base(self, value):
+        self._pos_base = value
+
+    @property
+    def cano_topo(self):
+        return self._CANO_TOPO
+
+    @cano_topo.setter
+    def cano_topo(self, value):
+        self._CANO_TOPO = value
+
+    @property
+    def cano_base(self):
+        return self._CANO_BASE
+
+    @cano_base.setter
+    def cano_base(self, value):
+        self._CANO_BASE = value
+
     @property
     def passou(self):
         return self._passou
@@ -166,24 +245,24 @@ class Cano(Desenhavel):
         self._passou = value
 
     def definir_altura(self):
-        self._altura = random.randrange(50, 450)
-        self._pos_topo = self._altura - self._CANO_TOPO.get_height()
-        self._pos_base = self._altura + self.DISTANCIA
+        self.altura = random.randrange(50, 450)
+        self.pos_topo = self.altura - self._CANO_TOPO.get_height()
+        self.pos_base = self.altura + self.DISTANCIA
 
     def mover(self):
-        self._x -= self.VELOCIDADE
+        self.x -= self.VELOCIDADE
 
     def desenhar(self, tela):
-        tela.blit(self._CANO_TOPO, (self._x, self._pos_topo))
-        tela.blit(self._CANO_BASE, (self._x, self._pos_base))
+        tela.blit(self._CANO_TOPO, (self.x, self.pos_topo))
+        tela.blit(self._CANO_BASE, (self.x, self.pos_base))
 
     def colidir(self, passaro):
         passaro_mask = passaro.get_mask()
         topo_mask = pygame.mask.from_surface(self._CANO_TOPO)
         base_mask = pygame.mask.from_surface(self._CANO_BASE)
 
-        distancia_topo = (self._x - passaro.x, self._pos_topo - round(passaro.y))
-        distancia_base = (self._x - passaro.x, self._pos_base - round(passaro.y))
+        distancia_topo = (self.x - passaro.x, self.pos_topo - round(passaro.y))
+        distancia_base = (self.x - passaro.x, self.pos_base - round(passaro.y))
 
         topo_ponto = passaro_mask.overlap(topo_mask, distancia_topo)
         base_ponto = passaro_mask.overlap(base_mask, distancia_base)
@@ -241,7 +320,7 @@ def desenhar_tela(tela, objetos, pontos):
     for obj in objetos:
         obj.desenhar(tela)
     texto = FONTE_PONTOS.render(f"Pontuação: {pontos}", 1, (255, 255, 255))
-    tela.blit(texto, (TELA_LARGURA - 10 - texto.get_width(), 10))
+    tela.blit(texto, (TELA_LARGURA - 75 - texto.get_width(), 10))
     pygame.display.update()
 
 def main():
