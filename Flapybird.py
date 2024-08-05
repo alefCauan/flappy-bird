@@ -44,7 +44,8 @@ class HistoricoPontuacao:
 class Desenhavel:
     def desenhar(self, tela):
         pass
-
+    def mover(self):
+        pass
 class Passaro(Desenhavel):
     IMGS = IMAGENS_PASSARO
     ROTACAO_MAXIMA = 25
